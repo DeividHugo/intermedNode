@@ -1,0 +1,45 @@
+version: '3'
+networks:
+  intermed-network:
+    external: true
+
+services:   
+  server-intermed:
+    build:
+      dockerfile: Dockerfile-server
+    container_name: server
+    ports: 
+      - "3001:3001"
+    volumes:
+      - ./server:/server
+      - ./server/node_modules:/server/node_modules
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - intermed-network
+  
+  client-intermed:
+    build:
+      dockerfile: Dockerfile-client
+    container_name: client-intermed
+    ports: 
+      - "3000:3000"
+    volumes:
+      - ./client:/client
+      - ./client/node_modules:/client/node_modules
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - intermed-network
+  
+  mysql-intermed:
+    image: mysql:latest
+    container_name: mysql-intermed
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    networks:
+      - intermed-network
